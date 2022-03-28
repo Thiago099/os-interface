@@ -5,7 +5,8 @@
 :title="window.title"
 :icon="window.icon" 
 v-if="window.active"
-@minus="window.visible = false"
+v-show="window.visible"
+@minus="window.visible = false;window.focus = false"
 @close="window.active = false"
 @focus="handleFocus(window)"
 :style="`z-index: ${window.zindex};`"
@@ -19,21 +20,15 @@ v-if="window.active"
       @click="()=>{
         if(!window.active)
         {
-          window.visible = true
           window.active = true
+          window.focus = true
         }
-        else
-        {
-          window.visible = !window.visible;
-        }
-        if(window.visible)
-        {
-          handleFocus(window)
-        }
+        window.visible = true
+        handleFocus(window)
       }"
     > 
       <img :src="require('@/assets/' + window.icon + '')" class="icon" alt="">
-      <div class="bar-underline" :class="{'active':window.active, 'selected':window.visible
+      <div class="bar-underline" :class="{'active':window.active, 'selected':window.focus
       }"></div>
     </div>
   </div>
@@ -60,6 +55,7 @@ export default defineComponent({
           icon:'gear.png',
           visible: false,
           active: false,
+          focus:false,
           component:defineAsyncComponent(() => import('@/views/Config.vue'))
         },
         {
@@ -67,6 +63,7 @@ export default defineComponent({
           icon:'airplane.png',
           visible: false,
           active: false,
+          focus:false,
           component:defineAsyncComponent(() => import('@/views/Solicitation.vue'))
         }
       ],
@@ -85,10 +82,10 @@ export default defineComponent({
       for(var i = cur;i<this.windows.length;i++)
       {
         this.windows[i].zindex = i-1;
-        this.windows[i].visible = false;
+        this.windows[i].focus = false;
       }
       this.windows[cur].zindex = this.windows.length-1;
-      this.windows[cur].visible = true
+      this.windows[cur].focus = true;
       this.windows.sort((a, b) => {
         return a.sort - b.sort
       })
