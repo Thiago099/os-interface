@@ -14,3 +14,6 @@ body{
 .icon{
   filter:invert(1);
 }
+body{
+    overflow: hidden
+}
